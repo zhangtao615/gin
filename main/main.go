@@ -68,6 +68,9 @@ func main() {
 	r.POST("/loginForm", Examples.LoginForm)
 	r.POST("/loginXML", Examples.LoginXML)
 
+	// Multipart/Urlencoded form
+	r.POST("/urlencodedForm", Examples.UrlencodedForm)
+
 	err := r.Run(":8080")
 	if err != nil {
 		return
