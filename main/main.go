@@ -14,6 +14,7 @@ func main() {
 	// logger middleware
 	r.Use(MiddleWares.Logger())
 
+	// load html template
 	r.LoadHTMLGlob("web/*")
 	r.GET("/", indexHandler)
 
