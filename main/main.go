@@ -4,6 +4,9 @@ import (
 	"gin-basic/Examples"
 	"gin-basic/MiddleWares"
 	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin/binding"
+	"github.com/go-playground/validator/v10"
+	"log"
 	"net/http"
 	"os"
 )
@@ -11,6 +14,9 @@ import (
 func main() {
 	r := gin.Default()
 	gin.DefaultWriter = os.Stdout
+	gin.DebugPrintRouteFunc = func(httpMethod, absolutePath, handlerName string, nuHandlers int) {
+		log.Printf("endpoint %v %v %v %v\n", httpMethod, absolutePath, handlerName, nuHandlers)
+	}
 	// logger middleware
 	r.Use(MiddleWares.Logger())
 
@@ -39,6 +45,13 @@ func main() {
 
 	// Bind Uri
 	r.GET("/bindUri/:name/:id", Examples.BindUri)
+
+	// validator
+	if v, ok := binding.Validator.Engine().(*validator.Validate); ok {
+		v.RegisterStructValidation(Examples.UserStructLevelValidation, Examples.User{})
+	}
+	r.POST("/user", Examples.Validators)
+
 	err := r.Run(":8080")
 	if err != nil {
 		return
