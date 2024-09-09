@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 	"github.com/go-playground/validator/v10"
+	"io"
 	"log"
 	"net/http"
 	"os"
@@ -13,7 +14,8 @@ import (
 
 func main() {
 	r := gin.Default()
-	gin.DefaultWriter = os.Stdout
+	f, _ := os.Create("gin.log")
+	gin.DefaultWriter = io.MultiWriter(f)
 	gin.DebugPrintRouteFunc = func(httpMethod, absolutePath, handlerName string, nuHandlers int) {
 		log.Printf("endpoint %v %v %v %v\n", httpMethod, absolutePath, handlerName, nuHandlers)
 	}
@@ -51,6 +53,9 @@ func main() {
 		v.RegisterStructValidation(Examples.UserStructLevelValidation, Examples.User{})
 	}
 	r.POST("/user", Examples.Validators)
+
+	// Goroutines inside a middleware
+	r.GET("/long_sync", Examples.GoroutinesInMiddleware)
 
 	err := r.Run(":8080")
 	if err != nil {
