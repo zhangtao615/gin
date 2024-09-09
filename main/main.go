@@ -60,6 +60,14 @@ func main() {
 	// Map as querystring or postform parameters
 	r.POST("/mapAsQuerystring", Examples.MapAsQueryString)
 
+	// Model binding and validation
+	if v, ok := binding.Validator.Engine().(*validator.Validate); ok {
+		v.RegisterStructValidation(Examples.UserLoginValidation, Examples.Login{})
+	}
+	r.POST("/loginJSON", Examples.LoginJson)
+	r.POST("/loginForm", Examples.LoginForm)
+	r.POST("/loginXML", Examples.LoginXML)
+
 	err := r.Run(":8080")
 	if err != nil {
 		return
