@@ -57,6 +57,9 @@ func main() {
 	// Goroutines inside a middleware
 	r.GET("/long_sync", Examples.GoroutinesInMiddleware)
 
+	// Map as querystring or postform parameters
+	r.POST("/mapAsQuerystring", Examples.MapAsQueryString)
+
 	err := r.Run(":8080")
 	if err != nil {
 		return
